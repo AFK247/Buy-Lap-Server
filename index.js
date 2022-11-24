@@ -23,6 +23,9 @@ async function run() {
 
         const catagoryCollection = client.db('Laptop').collection('Catagory');
         const laptopCollection = client.db('Laptop').collection('Laptops');
+        const bookingsCollection = client.db('Laptop').collection('Bookings');
+        const usersCollection = client.db('Laptop').collection('Users');
+
 
         app.get('/catagory', async (req, res) => {
             const query = {};
@@ -30,12 +33,26 @@ async function run() {
             res.send(catagory);
         });
 
-        app.get('/catagory/:id', async (req, res) => {
+        app.get('/category/:id', async (req, res) => {
             const code =req.params.id;
             const query = {code:code};
             const laptops = await laptopCollection.find(query).toArray();
             // console.log(laptops);
             res.send(laptops);
+        });
+
+        app.post('/bookings',  async (req, res) => {
+            const bookings = req.body;
+            // console.log(bookings);
+            const result = await bookingsCollection.insertOne(bookings);
+            res.send(result);
+        });
+
+        app.post('/user',  async (req, res) => {
+            const user = req.body;
+            // console.log(user);
+            const result = await usersCollection.insertOne(user);
+            res.send(result);
         });
 
 
