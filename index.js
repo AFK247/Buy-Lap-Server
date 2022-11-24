@@ -21,8 +21,22 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
 
-        const serviceCollection = client.db('laptop').collection('catagory');
-        // const reviewCollection = client.db('laptop').collection('review');
+        const catagoryCollection = client.db('Laptop').collection('Catagory');
+        const laptopCollection = client.db('Laptop').collection('Laptops');
+
+        app.get('/catagory', async (req, res) => {
+            const query = {};
+            const catagory = await catagoryCollection.find(query).toArray();
+            res.send(catagory);
+        });
+
+        app.get('/catagory/:id', async (req, res) => {
+            const code =req.params.id;
+            const query = {code:code};
+            const laptops = await laptopCollection.find(query).toArray();
+            // console.log(laptops);
+            res.send(laptops);
+        });
 
 
     }
