@@ -25,6 +25,7 @@ async function run() {
         const laptopCollection = client.db('Laptop').collection('Laptops');
         const bookingsCollection = client.db('Laptop').collection('Bookings');
         const usersCollection = client.db('Laptop').collection('Users');
+        const advertiseCollection = client.db('Laptop').collection('Advertise');
 
 
         app.get('/catagory', async (req, res) => {
@@ -100,8 +101,22 @@ async function run() {
         app.post('/addProduct',  async (req, res) => {
             const add = req.body;
             // console.log(bookings);
-            const result = await bookingsCollection.insertOne(add);
+            const result = await laptopCollection.insertOne(add);
             res.send(result);
+        });
+
+        app.post('/advertise',  async (req, res) => {
+            const advertise = req.body;
+            // console.log(advertise);
+            const result = await advertiseCollection.insertOne(advertise);
+            res.send(result);
+        });
+
+        app.get('/advertise',  async (req, res) => {
+            const query = {};
+            const users = await usersCollection.find(query).toArray();
+            // console.log(laptops);
+            res.send(users);
         });
 
 
