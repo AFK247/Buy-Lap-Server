@@ -69,6 +69,13 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
         })
+        
+        app.get('/products', async (req, res) => {
+            const query = {};
+            const products = await laptopCollection.find(query).toArray();
+            res.send(products);
+        });
+
         app.get('/users/buyer/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email }
@@ -121,12 +128,43 @@ async function run() {
 
         });
 
+
         app.get('/advertise', async (req, res) => {
             const query = {};
             const item = await advertiseCollection.find(query).toArray();
             res.send(item);
         });
 
+        app.delete('/myProductDelete/:name', async (req, res) => {
+            const product_name= req.params.name;
+            const query = { product_name };
+            const result1 = await laptopCollection.deleteOne(query);
+            const result2 = await advertiseCollection.deleteOne(query);
+            res.send(result1);
+        })
+
+
+        app.delete('/deleteSeller/:email', async (req, res) => {
+            const email= req.params.email;
+            console.log(email);
+            const query = { email };
+            const result1 = await laptopCollection.deleteMany(query);
+            const result2 = await usersCollection.deleteOne(query);
+            res.send(result2);
+
+        })
+        app.delete('/deleteBuyer/:email', async (req, res) => {
+            const email= req.params.email;
+            console.log(email);
+            const query = { email };
+
+            const result1 = await bookingsCollection.deleteMany(query);
+
+            const result2 = await usersCollection.deleteOne(query);
+            res.send(result2);
+        })
+
+        
 
     }
     finally {
