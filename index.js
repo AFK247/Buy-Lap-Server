@@ -35,28 +35,28 @@ async function run() {
         });
 
         app.get('/category/:id', async (req, res) => {
-            const code =req.params.id;
-            const query = {code:code};
+            const code = req.params.id;
+            const query = { code: code };
             const laptops = await laptopCollection.find(query).toArray();
             // console.log(laptops);
             res.send(laptops);
         });
 
-        app.post('/bookings',  async (req, res) => {
+        app.post('/bookings', async (req, res) => {
             const bookings = req.body;
             // console.log(bookings);
             const result = await bookingsCollection.insertOne(bookings);
             res.send(result);
         });
 
-        app.post('/user',  async (req, res) => {
+        app.post('/user', async (req, res) => {
             const user = req.body;
             // console.log(user);
             const result = await usersCollection.insertOne(user);
             res.send(result);
         });
 
-        app.get('/user',  async (req, res) => {
+        app.get('/user', async (req, res) => {
             const query = {};
             const users = await usersCollection.find(query).toArray();
             // console.log(laptops);
@@ -98,25 +98,33 @@ async function run() {
             res.send(sellers);
         })
 
-        app.post('/addProduct',  async (req, res) => {
+        app.post('/addProduct', async (req, res) => {
             const add = req.body;
             // console.log(bookings);
             const result = await laptopCollection.insertOne(add);
             res.send(result);
         });
 
-        app.post('/advertise',  async (req, res) => {
+        app.post('/advertise', async (req, res) => {
             const advertise = req.body;
-            // console.log(advertise);
-            const result = await advertiseCollection.insertOne(advertise);
-            res.send(result);
+            const product_name = advertise.product_name;
+            // console.log(product_name);
+            const query = { product_name };
+            const found = await advertiseCollection.findOne(query);
+            // console.log("found",found);
+            if (found) {
+            }
+            else {
+                const result = await advertiseCollection.insertOne(advertise);
+                res.send(result);
+            }
+
         });
 
-        app.get('/advertise',  async (req, res) => {
+        app.get('/advertise', async (req, res) => {
             const query = {};
-            const users = await usersCollection.find(query).toArray();
-            // console.log(laptops);
-            res.send(users);
+            const item = await advertiseCollection.find(query).toArray();
+            res.send(item);
         });
 
 
