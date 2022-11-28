@@ -52,8 +52,16 @@ async function run() {
         app.post('/user', async (req, res) => {
             const user = req.body;
             // console.log(user);
-            const result = await usersCollection.insertOne(user);
-            res.send(result);
+            const email = user.email;
+            const query = { email };
+            const found = await usersCollection.findOne(query);
+            if (found) {
+            }
+            else {
+                const result = await usersCollection.insertOne(user);
+                res.send(result);
+            }
+
         });
 
         app.get('/user', async (req, res) => {
@@ -69,7 +77,7 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ isAdmin: user?.role === 'admin' });
         })
-        
+
         app.get('/products', async (req, res) => {
             const query = {};
             const products = await laptopCollection.find(query).toArray();
@@ -136,25 +144,26 @@ async function run() {
         });
 
         app.delete('/myProductDelete/:name', async (req, res) => {
-            const product_name= req.params.name;
+            const product_name = req.params.name;
             const query = { product_name };
-            const result1 = await laptopCollection.deleteOne(query);
-            const result2 = await advertiseCollection.deleteOne(query);
+            const result1 = await laptopCollection.deleteMany(query);
+            const result2 = await advertiseCollection.deleteMany(query);
             res.send(result1);
         })
 
 
         app.delete('/deleteSeller/:email', async (req, res) => {
-            const email= req.params.email;
+            const email = req.params.email;
             console.log(email);
             const query = { email };
+            const ad = await advertiseCollection.deleteMany(query);
             const result1 = await laptopCollection.deleteMany(query);
             const result2 = await usersCollection.deleteOne(query);
             res.send(result2);
 
         })
         app.delete('/deleteBuyer/:email', async (req, res) => {
-            const email= req.params.email;
+            const email = req.params.email;
             console.log(email);
             const query = { email };
 
@@ -164,7 +173,7 @@ async function run() {
             res.send(result2);
         })
 
-        
+
 
     }
     finally {

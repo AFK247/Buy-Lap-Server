@@ -1,17 +1,14 @@
-Project Name: Pro Photography
+Project Name: Buy Lap
 
+The Github Repository Link for Client:  https://github.com/programming-hero-web-course-4/b612-used-products-resale-clients-side-AFK247
 
-This is Server side 
+The Github Repository Link for Server: https://github.com/programming-hero-web-course-4/b612-used-products-resale-server-side-AFK247
 
-The Github Repository Link for Client:  https://github.com/Porgramming-Hero-web-course/b6a11-service-review-client-side-AFK247
-
-The Github Repository Link for Server: https://github.com/Porgramming-Hero-web-course/b6a11-service-review-server-side-AFK247
-
-Live Website Link: https://photography-2351.web.app
+Live Website Link: https://buy-lap.web.app/
 
 Project Work: 
 
-* In this project I created some Services of different Photography Skills
+* In this project I created a E-commerce site for selling Used laptops
 
 * I used React router to route through different components
 
@@ -23,7 +20,7 @@ Project Work:
 
 * I used Mongodb For Database
 
-* I used Firebase For Authentication
+* I made dashboards for separate admin,user and buyer
 
 
 Framework/Libraries Used:
@@ -37,3 +34,5 @@ Framework/Libraries Used:
 * Dotenv
 
 * Bootstrap
+
+* React Query
