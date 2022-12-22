@@ -250,9 +250,6 @@ async function run() {
 
 
     }
-    finally {
-        //Nothing
-    }
 
 }
 
