@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
+const jwt=require('jsonwebtoken');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -16,6 +17,26 @@ const password = process.env.db_password;
 //The user and password were taken from env
 const uri = `mongodb+srv://${user}:${password}@cluster0.bs7nnrw.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+
+function verifyJWT(req, res, next) {
+
+    const authHeader = req.headers.authorization;
+    console.log(authHeader);
+    if (!authHeader) {
+        return res.status(401).send('unauthorized access');
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    jwt.verify(token, process.env.ACCESS_TOKEN, function (err, decoded) {
+        if (err) {
+            return res.status(403).send({ message: 'forbidden access' })
+        }
+        req.decoded = decoded;
+        next();
+    })
+
+}
 
 //Two collection is used
 async function run() {
@@ -64,6 +85,7 @@ async function run() {
 
         });
 
+
         app.get('/user', async (req, res) => {
             const query = {};
             const users = await usersCollection.find(query).toArray();
@@ -90,6 +112,7 @@ async function run() {
             const user = await usersCollection.findOne(query);
             res.send({ isBuyer: user?.role === 'buyer' });
         })
+
         app.get('/users/seller/:email', async (req, res) => {
             const email = req.params.email;
             const query = { email }
@@ -97,17 +120,28 @@ async function run() {
             res.send({ isSeller: user?.role === 'seller' });
         })
 
-        app.get('/buyer/:email', async (req, res) => {
+        app.get('/buyer/:email',verifyJWT, async (req, res) => {
             const email = req.params.email;
             // console.log(email);
             const query = { email }
             const buyers = await bookingsCollection.find(query).toArray();
+            const decodedEmail = req.decoded.email;
+
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+
             res.send(buyers);
         })
 
-        app.get('/seller/:email', async (req, res) => {
-            const email = req.params.email;
-            // console.log(email);
+        app.get('/seller',verifyJWT, async (req, res) => {
+            const email = req.query.email;
+            const decodedEmail = req.decoded.email;
+
+            if (email !== decodedEmail) {
+                return res.status(403).send({ message: 'forbidden access' });
+            }
+            
             const query = { email }
             const sellers = await laptopCollection.find(query).toArray();
             res.send(sellers);
@@ -173,6 +207,46 @@ async function run() {
             res.send(result2);
         })
 
+        app.get('/dashboard/updateLaptop/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result1 = await laptopCollection.findOne(query);
+            res.send(result1);
+        });
+
+        app.put('/dashboard/updateLaptop/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const Item = req.body;
+            const options = { upsert: true };
+            const updatedItem = {
+                $set: {
+                    product_name:Item.product_name,
+                    seller_name:Item.seller_name,
+                    pic:Item.pic,
+                    years:Item.years,
+                    or_price:Item.or_price,
+                    location:Item.location,
+                    re_price:Item.re_price,
+                    phone:Item.phone,
+                    details:Item.details
+                }
+            }
+            const result =await laptopCollection.updateOne(query, updatedItem,options);
+            res.send(result);
+        });
+
+        app.get('/jwt', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email };
+            const user = await usersCollection.findOne(query);
+            console.log(user);
+            if (user) {
+                const token = jwt.sign({ email }, process.env.ACCESS_TOKEN, { expiresIn: '1h' })
+                return res.send({ accessToken: token });
+            }
+            res.status(403).send({ accessToken: '' })
+        });
 
 
     }
