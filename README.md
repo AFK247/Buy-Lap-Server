@@ -1,8 +1,8 @@
 Project Name: Buy Lap
 
-The Github Repository Link for Client:  https://github.com/programming-hero-web-course-4/b612-used-products-resale-clients-side-AFK247
+The Github Repository Link for Client:  https://github.com/AFK247/Buy-Lap-Client
 
-The Github Repository Link for Server: https://github.com/programming-hero-web-course-4/b612-used-products-resale-server-side-AFK247
+The Github Repository Link for Server: https://github.com/AFK247/Buy-Lap-Server
 
 Live Website Link: https://buy-lap.web.app/
 
